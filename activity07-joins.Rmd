@@ -383,7 +383,7 @@ Visually, does Mitch Hedberg’s joke appear to hold here?
 dennys_laquinta%>%
   filter(state == "TX")%>%
   ggplot(aes(x = longitude, y = latitude, color = establishment))+
-  geom_point()+
+  geom_point()
 ```
 
 
