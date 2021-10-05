@@ -319,6 +319,51 @@ questions, contact your instructor. Otherwise feel free to continue on.
 
 Determine if La Quinta has any locations that are outside of the US.
 
+``` r
+laquinta %>%
+  filter(!state %in% states$abbreviation)
+```
+
+    ## # A tibble: 14 x 6
+    ##    address                     city               state zip   longitude latitude
+    ##    <chr>                       <chr>              <chr> <chr>     <dbl>    <dbl>
+    ##  1 Carretera Panamericana Sur… "\nAguascalientes" AG    20345    -102.     21.8 
+    ##  2 Av. Tulum Mza. 14 S.M. 4 L… "\nCancun"         QR    77500     -86.8    21.2 
+    ##  3 Ejercito Nacional 8211      "Col\nPartido Igl… CH    32528    -106.     31.7 
+    ##  4 Blvd. Aeropuerto 4001       "Parque Industria… NL    66600    -100.     25.8 
+    ##  5 Carrera 38 # 26-13 Avenida… "\nMedellin Colom… ANT   0500…     -75.6     6.22
+    ##  6 AV. PINO SUAREZ No. 1001    "Col. Centro\nMon… NL    64000    -100.     25.7 
+    ##  7 Av. Fidel Velazquez #3000 … "\nMonterrey"      NL    64190    -100.     25.7 
+    ##  8 63 King Street East         "\nOshawa"         ON    L1H1…     -78.9    43.9 
+    ##  9 Calle Las Torres-1 Colonia… "\nPoza Rica"      VE    93210     -97.4    20.6 
+    ## 10 Blvd. Audi N. 3 Ciudad Mod… "\nSan Jose Chiap… PU    75010     -97.8    19.2 
+    ## 11 Ave. Zeta del Cochero No 4… "Col. ReservaTerr… PU    72810     -98.2    19.0 
+    ## 12 Av. Benito Juarez 1230 B (… "\nSan Luis Potos… SL    78399    -101.     22.1 
+    ## 13 Blvd. Fuerza Armadas        "contiguo Mall La… FM    11101     -87.2    14.1 
+    ## 14 8640 Alexandra Rd           "\nRichmond"       BC    V6X1…    -123.     49.2
+
+``` r
+anti_join(laquinta, states, by= c("state"="abbreviation"))
+```
+
+    ## # A tibble: 14 x 6
+    ##    address                     city               state zip   longitude latitude
+    ##    <chr>                       <chr>              <chr> <chr>     <dbl>    <dbl>
+    ##  1 Carretera Panamericana Sur… "\nAguascalientes" AG    20345    -102.     21.8 
+    ##  2 Av. Tulum Mza. 14 S.M. 4 L… "\nCancun"         QR    77500     -86.8    21.2 
+    ##  3 Ejercito Nacional 8211      "Col\nPartido Igl… CH    32528    -106.     31.7 
+    ##  4 Blvd. Aeropuerto 4001       "Parque Industria… NL    66600    -100.     25.8 
+    ##  5 Carrera 38 # 26-13 Avenida… "\nMedellin Colom… ANT   0500…     -75.6     6.22
+    ##  6 AV. PINO SUAREZ No. 1001    "Col. Centro\nMon… NL    64000    -100.     25.7 
+    ##  7 Av. Fidel Velazquez #3000 … "\nMonterrey"      NL    64190    -100.     25.7 
+    ##  8 63 King Street East         "\nOshawa"         ON    L1H1…     -78.9    43.9 
+    ##  9 Calle Las Torres-1 Colonia… "\nPoza Rica"      VE    93210     -97.4    20.6 
+    ## 10 Blvd. Audi N. 3 Ciudad Mod… "\nSan Jose Chiap… PU    75010     -97.8    19.2 
+    ## 11 Ave. Zeta del Cochero No 4… "Col. ReservaTerr… PU    72810     -98.2    19.0 
+    ## 12 Av. Benito Juarez 1230 B (… "\nSan Luis Potos… SL    78399    -101.     22.1 
+    ## 13 Blvd. Fuerza Armadas        "contiguo Mall La… FM    11101     -87.2    14.1 
+    ## 14 8640 Alexandra Rd           "\nRichmond"       BC    V6X1…    -123.     49.2
+
 #### Isolating US locations
 
 For the rest of this activity, we will work with the data from the
@@ -327,21 +372,69 @@ we do not need to worry about updating this object, but you do need to
 do some work on the `laquinta` data. Create a new object called
 `laquinta_us` that only contains the locations inside the US.
 
+``` r
+laquinta_us <- laquinta %>%
+  filter(state %in% states$abbreviation)
+```
+
 ### Fewest locations
 
 Let’s test some of our data summary skills.
 
 Which US state(s) has/ve the fewest Denny’s location?
 
-**Response**:
+``` r
+dennys%>%
+  group_by(state)%>%
+  summarise(count = n())
+```
+
+    ## # A tibble: 51 x 2
+    ##    state count
+    ##    <chr> <int>
+    ##  1 AK        3
+    ##  2 AL        7
+    ##  3 AR        9
+    ##  4 AZ       83
+    ##  5 CA      403
+    ##  6 CO       29
+    ##  7 CT       12
+    ##  8 DC        2
+    ##  9 DE        1
+    ## 10 FL      140
+    ## # … with 41 more rows
+
+**Response**:Alaska has the fewest amount of Denny’s.
 
 Which US state(s) has/ve the fewest La Quinta locations?
 
-**Response**:
+``` r
+laquinta_us%>%
+  group_by(state)%>%
+  summarise(count = n())
+```
+
+    ## # A tibble: 48 x 2
+    ##    state count
+    ##    <chr> <int>
+    ##  1 AK        2
+    ##  2 AL       16
+    ##  3 AR       13
+    ##  4 AZ       18
+    ##  5 CA       56
+    ##  6 CO       27
+    ##  7 CT        6
+    ##  8 FL       74
+    ##  9 GA       41
+    ## 10 IA        4
+    ## # … with 38 more rows
+
+**Response**:Alaska has the fewest amount of La Quinta’s.
 
 Is this surprising to you? Why or why not?
 
-**Response**:
+**Response**: No it is not surprising to me since Alaska would have less
+restaurants and hotels.
 
 ### Locations per thousand square miles
 
@@ -362,16 +455,64 @@ each company’s tibble with the information in the `states` tibble.
 3.  *Then*, calculate the number of Denny’s locations *per* thousand
     square miles.
 
+``` r
+dennys%>%
+  group_by(state)%>%
+  summarise(count = n())%>%
+  inner_join(states, by = c("state"="abbreviation"))%>%
+  mutate(DpTSM = (count/area)*1000)%>%
+  arrange(desc(DpTSM))
+```
+
+    ## # A tibble: 51 x 5
+    ##    state count name                     area  DpTSM
+    ##    <chr> <int> <chr>                   <dbl>  <dbl>
+    ##  1 DC        2 District of Columbia     68.3 29.3  
+    ##  2 RI        5 Rhode Island           1545.   3.24 
+    ##  3 CA      403 California           163695.   2.46 
+    ##  4 CT       12 Connecticut            5543.   2.16 
+    ##  5 FL      140 Florida               65758.   2.13 
+    ##  6 MD       26 Maryland              12406.   2.10 
+    ##  7 NJ       10 New Jersey             8723.   1.15 
+    ##  8 NY       56 New York              54555.   1.03 
+    ##  9 IN       37 Indiana               36420.   1.02 
+    ## 10 OH       44 Ohio                  44826.   0.982
+    ## # … with 41 more rows
+
 Which states have the most Denny’s locations per thousand square miles?
 
-**Response**:
+**Response**: District of Columbia, Rhode Island, and California.
 
 #### La Quinta
 
 Similarly as we previously did for Denny’s, calculate the number of La
 Quinta locations *per* thousand square miles.
 
-**Response**:
+``` r
+laquinta_us %>%
+  group_by(state)%>%
+  summarise(count = n())%>%
+  inner_join(states, by = c("state"="abbreviation"))%>%
+  mutate(LQpTSM = (count/area)*1000)%>%
+  arrange(desc(LQpTSM))
+```
+
+    ## # A tibble: 48 x 5
+    ##    state count name             area LQpTSM
+    ##    <chr> <int> <chr>           <dbl>  <dbl>
+    ##  1 RI        2 Rhode Island    1545.  1.29 
+    ##  2 FL       74 Florida        65758.  1.13 
+    ##  3 CT        6 Connecticut     5543.  1.08 
+    ##  4 MD       13 Maryland       12406.  1.05 
+    ##  5 TX      237 Texas         268596.  0.882
+    ##  6 TN       30 Tennessee      42144.  0.712
+    ##  7 GA       41 Georgia        59425.  0.690
+    ##  8 NJ        5 New Jersey      8723.  0.573
+    ##  9 MA        6 Massachusetts  10554.  0.568
+    ## 10 LA       28 Louisiana      52378.  0.535
+    ## # … with 38 more rows
+
+**Response**: Rhode Island, Florida, and Connecticut.
 
 ![](README-img/noun_pause.png) **Planned Pause Point**: If you have any
 questions, contact your instructor. Otherwise feel free to continue on.
@@ -390,7 +531,8 @@ Why would it not be wise to use a mutating join (e.g., `inner_join`,
 datasets have the same variable names, would it not make sense to join
 them at the same address?
 
-**Response**:
+**Response**: We need to keep the rows to display an individual
+location. Each row should be for one observation only.
 
 If we were able to use a mutating join, what would this output would
 look like? Why would this not be helpful?
@@ -413,15 +555,24 @@ pre_join_laquinta_us <- laquinta_us %>%
   mutate(establishment = "La Quinta")
 ```
 
-    ## Error in mutate(., establishment = "La Quinta"): object 'laquinta_us' not found
-
 Now, stack these two `pre_join_*` tibbles on top of each other. After
 you have verified the stacking worked, assign the resulting object to
 `dennys_laquinta`.
 
+``` r
+dennys_laquinta <- bind_rows(pre_join_dennys, pre_join_laquinta_us)
+```
+
 We can plot the locations of the two establishments using a scatter plot
 and color the points by the establishment type. Note that longitude
 should be plotted on the *x*-axis and latitude on the *y*-axis.
+
+``` r
+ggplot(dennys_laquinta, aes(x = longitude, y = latitude, color = establishment))+
+  geom_point()
+```
+
+![](activity07-joins_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 **Response**:
 
@@ -451,7 +602,18 @@ Try adjusting the transparency of the points by setting the `alpha`
 level (so that it is easier to see the over-plotted ones). Visually,
 does Mitch Hedberg’s joke appear to hold in Michigan?
 
-**Response**:
+``` r
+dennys_laquinta%>%
+  filter(state == "MI")%>%
+  ggplot(aes(x = longitude, y = latitude, color = establishment))+
+  geom_point()
+```
+
+![](activity07-joins_files/figure-gfm/michigan_plot-1.png)<!-- -->
+
+**Response**: There are only 4 LQ’s in Michigan 2 of which are right
+next to a Denny’s, the other 2 are close to Denny’s but not right next
+to them.
 
 #### Texas locations
 
@@ -459,7 +621,20 @@ Now filter the data for observations in Texas only. Create the plot,
 with an appropriate `alpha` level. Visually, does Mitch Hedberg’s joke
 appear to hold here?
 
-**Response**:
+``` r
+dennys_laquinta%>%
+  filter(state == "TX")%>%
+  ggplot(aes(x = longitude, y = latitude, color = establishment))+
+  geom_point()+
+```
+
+    ## Error: <text>:5:0: unexpected end of input
+    ## 3:   ggplot(aes(x = longitude, y = latitude, color = establishment))+
+    ## 4:   geom_point()+
+    ##   ^
+
+**Response**: It appears there is about half and half ratio here as well
+where half the LQ’s are next to Denny’s and half are not.
 
 ### Challenge: Dress up your maps
 

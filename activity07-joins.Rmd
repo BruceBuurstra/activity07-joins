@@ -261,24 +261,33 @@ To do this, we will need to join each company's tibble with the information in t
 dennys%>%
   group_by(state)%>%
   summarise(count = n())%>%
-  inner_join(states, by = c("state"="abbreviation"))
+  inner_join(states, by = c("state"="abbreviation"))%>%
+  mutate(DpTSM = (count/area)*1000)%>%
+  arrange(desc(DpTSM))
 ```
 
 
 
 Which states have the most Denny's locations per thousand square miles?
 
-**Response**:
+**Response**: District of Columbia, Rhode Island, and California.
 
 
 #### La Quinta
 
 Similarly as we previously did for Denny's, calculate the number of La Quinta locations *per* thousand square miles.
 
+```{r laquinta_per_sqthous_mile}
+laquinta_us %>%
+  group_by(state)%>%
+  summarise(count = n())%>%
+  inner_join(states, by = c("state"="abbreviation"))%>%
+  mutate(LQpTSM = (count/area)*1000)%>%
+  arrange(desc(LQpTSM))
+```
 
 
-
-**Response**:
+**Response**: Rhode Island, Florida, and Connecticut.
 
 
 ![](README-img/noun_pause.png) **Planned Pause Point**: If you have any questions, contact your instructor. Otherwise feel free to continue on.
@@ -292,7 +301,7 @@ Both of these tibbles have the same columns in the same order (i.e., `address`, 
 Why would it not be wise to use a mutating join (e.g., `inner_join`, `left/right_join`, `full_join`) for these data?
 That is, both of the datasets have the same variable names, would it not make sense to join them at the same address?
 
-**Response**:
+**Response**: We need to keep the rows to display an individual location. Each row should be for one observation only.
 
 
 If we were able to use a mutating join, what would this output would look like?
@@ -317,13 +326,18 @@ pre_join_laquinta_us <- laquinta_us %>%
 Now, stack these two `pre_join_*` tibbles on top of each other.
 After you have verified the stacking worked, assign the resulting object to `dennys_laquinta`.
 
-
+```{r dennys_laquinta}
+dennys_laquinta <- bind_rows(pre_join_dennys, pre_join_laquinta_us)
+```
 
 
 We can plot the locations of the two establishments using a scatter plot and color the points by the establishment type.
 Note that longitude should be plotted on the *x*-axis and latitude on the *y*-axis.
 
-
+```{r}
+ggplot(dennys_laquinta, aes(x = longitude, y = latitude, color = establishment))+
+  geom_point()
+```
 
 
 **Response**:
@@ -348,11 +362,16 @@ Filter the data for observations in Michigan only, and create a plot.
 Try adjusting the transparency of the points by setting the `alpha` level (so that it is easier to see the over-plotted ones).
 Visually, does Mitch Hedberg’s joke appear to hold in Michigan?
 
+```{r michigan_plot}
+dennys_laquinta%>%
+  filter(state == "MI")%>%
+  ggplot(aes(x = longitude, y = latitude, color = establishment))+
+  geom_point()
+```
 
 
 
-**Response**:
-
+**Response**: There are only 4 LQ's in Michigan 2 of which are right next to a Denny's, the other 2 are close to Denny's but not right next to them.
 
 #### Texas locations
 
@@ -360,10 +379,16 @@ Now filter the data for observations in Texas only.
 Create the plot, with an appropriate `alpha` level.
 Visually, does Mitch Hedberg’s joke appear to hold here?
 
+```{r texas_plot}
+dennys_laquinta%>%
+  filter(state == "TX")%>%
+  ggplot(aes(x = longitude, y = latitude, color = establishment))+
+  geom_point()+
+```
 
 
 
-**Response**:
+**Response**: It appears there is about half and half ratio here as well where half the LQ's are next to Denny's and half are not.
 
 
 ### Challenge: Dress up your maps
